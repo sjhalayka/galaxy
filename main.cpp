@@ -9,13 +9,50 @@ int main(int argc, char **argv)
 	test_particle_vel.push_back(custom_math::vector_3(0, 0, 0));
 	test_particle_mass.push_back(1.0f);
 
-	test_particle_pos.push_back(custom_math::vector_3(0, 1, 0));
-	test_particle_vel.push_back(custom_math::vector_3(-0.5, 0, 0));
-	test_particle_mass.push_back(0.0000001f);
+	const size_t max_num_stars = 1000;
+	size_t num_stars = 0;
+	const float mass_per_star = 0.00001f / max_num_stars;
 
-	test_particle_pos.push_back(custom_math::vector_3(0, -1, 0));
-	test_particle_vel.push_back(custom_math::vector_3(0.5, 0, 0));
-	test_particle_mass.push_back(0.0000001f);
+	while (num_stars < max_num_stars)
+	{
+		float x = rand() / static_cast<float>(RAND_MAX);
+		x *= 2.0f;
+		x -= 1.0f;
+
+		float y = rand() / static_cast<float>(RAND_MAX);
+		y *= 2.0f;
+		y -= 1.0f;
+
+		complex<float> c(x, y);
+
+		if (abs(c) <= 1)
+		{
+			test_particle_pos.push_back(custom_math::vector_3(x, y, 0));
+			test_particle_mass.push_back(mass_per_star);
+
+			num_stars++;
+		}
+	}
+	
+	for (size_t i = 1; i < test_particle_pos.size(); i++)
+	{
+		custom_math::vector_3 temp_vel;
+		const custom_math::vector_3 a = grav_acceleration(i, test_particle_pos[i], temp_vel);
+
+		custom_math::vector_3 out(0, 0, 1);
+
+		test_particle_vel.push_back(a.cross(out));
+
+		if (test_particle_vel[i].length() > speed_of_light)
+		{
+			test_particle_vel[i].normalize();
+			test_particle_vel[i] *= speed_of_light;
+		}
+	}
+
+
+
+
 
 	glutInit(&argc, argv);
 	init_opengl(win_x, win_y);
@@ -162,21 +199,28 @@ void draw_objects(void)
 	glPushMatrix();
   
 
-    glPointSize(1.0);
-    glLineWidth(1.0f);
+	glPointSize(2.0);
+	glLineWidth(1.0f);
 
     
     glBegin(GL_POINTS);
     //glVertex3f(black_hole_pos.x, black_hole_pos.y, black_hole_pos.z);
     //
-    glColor3f(1.0, 1.0, 1.0);
+    //glColor3f(1.0, 1.0, 1.0);
+    //
+    //for(size_t i = 0; i < positions.size(); i++)
+    //glVertex3f(positions[i].x, positions[i].y, positions[i].z);
+    //
+    //glEnd();
     
-    for(size_t i = 0; i < positions.size(); i++)
-    glVertex3f(positions[i].x, positions[i].y, positions[i].z);
-    
-    glEnd();
-    
-    
+
+
+	glColor3f(0.0, 0.0, 0.0);
+
+	for (size_t i = 0; i < test_particle_pos.size(); i++)
+		glVertex3f(test_particle_pos[i].x, test_particle_pos[i].y, test_particle_pos[i].z);
+
+	glEnd();
     
     
     

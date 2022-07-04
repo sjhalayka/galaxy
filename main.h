@@ -37,6 +37,9 @@ using std::map;
 #include <utility>
 using std::pair;
 
+#include <complex>
+using std::complex;
+
 
 void idle_func(void);
 void init_opengl(const int &width, const int &height);
@@ -50,31 +53,22 @@ void passive_motion_func(int x, int y);
 void render_string(int x, const int y, void *font, const string &text);
 void draw_objects(void);
 
-const float speed_of_light = 1;// 299792458;
-const float grav_constant = 1;// 6.673e-11;
-//const float black_hole_mass = 1;// 1.989e30;
-const float max_accel = speed_of_light * 2.0f;
-const float dt = 0.001f;
 
-//custom_math::vector_3 black_hole_pos(0, 0, 0);
+custom_math::vector_3 grav_acceleration(const size_t index, const custom_math::vector_3& pos, const custom_math::vector_3& vel);
 
-//custom_math::vector_3 mercury_pos(0, 1, 0);
-//custom_math::vector_3 mercury_vel(-1, 0, 0);
+const float speed_of_light = 1;
+const float grav_constant = 1;
+const float max_accel = speed_of_light * 2;
+const float dt = 0.1f;
 
 vector<custom_math::vector_3> test_particle_pos;
 vector<custom_math::vector_3> test_particle_vel;
 vector<float> test_particle_mass;
 
-
-//custom_math::vector_3 mercury_pos(0, 69817079000.0, 0);
-//custom_math::vector_3 mercury_vel(-38860, 0, 0);
-
-
-
 vector<custom_math::vector_3> positions;
 
-custom_math::vector_3 background_colour(0.0f, 0.0f, 0.0f);
-custom_math::vector_3 control_list_colour(1.0f, 1.0f, 1.0f);
+custom_math::vector_3 background_colour(1.0f, 1.0f, 1.0f);
+custom_math::vector_3 control_list_colour(0.0f, 0.0f, 0.0f);
 
 bool draw_axis = true;
 bool draw_control_list = true;
